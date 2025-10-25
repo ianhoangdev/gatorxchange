@@ -10,8 +10,10 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
+// Initialize Firebase app
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(app);
 
-export { auth };
+// getAuth() must only run in the browser. Guard so server-side rendering doesn't call browser-only APIs.
+const auth = typeof window !== 'undefined' ? getAuth(app) : null;
+
+export { auth, app };
