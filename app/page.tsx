@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import LandingPage from '@/components/LandingPage';
+import ListingForm from '@/components/ListingForm';
 
 export default function Home() {
   const { user, loading, logout } = useAuth();
+  const [showForm, setShowForm] = useState(false);
 
   if (loading) {
     return (
@@ -28,22 +31,32 @@ export default function Home() {
               <h1 className="text-2xl font-bold text-gray-900">Campus Marketplace</h1>
               <p className="text-sm text-gray-600">Welcome, {user.email}</p>
             </div>
-            <button
-              onClick={logout}
-              className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
-              Sign Out
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowForm((s) => !s)}
+                className="px-4 py-2 text-sm font-medium rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
+              >
+                {showForm ? 'Hide' : 'Create Listing'}
+              </button>
+              <button
+                onClick={logout}
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  {showForm && <ListingForm user={user} onClose={() => setShowForm(false)} />}
+
         {/* Featured Section */}
         <div className="px-4 sm:px-0">
           <h2 className="text-2xl font-semibold text-gray-900 mb-6">Featured Listings</h2>
-          
+
           {/* Sample Listings Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Sample Cards - These will be replaced with real data later */}
