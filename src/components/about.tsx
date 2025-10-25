@@ -27,6 +27,11 @@ export function About() {
       title: "Relevant Listings",
       description: "Easily find things students actually want.",
     },
+    {
+      icon: TrendingUp,
+      title: "Relevant Listings",
+      description: "Easily find things students actually want.",
+    },
   ]
 
   return (
