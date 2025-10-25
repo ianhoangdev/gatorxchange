@@ -51,38 +51,38 @@ export default function Home() {
     return <LandingPage />;
   }
 
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
 
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {showForm && <ListingForm user={user} onClose={() => setShowForm(false)} />}
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {showForm && <ListingForm user={user} onClose={() => setShowForm(false)} />}
 
-          <div className="px-4 sm:px-0">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">Featured Listings</h2>
-              <div className="hidden sm:block">
-                <button
-                  onClick={() => setShowForm((s) => !s)}
-                  className="px-4 py-2 text-sm font-medium rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
-                >
-                  {showForm ? 'Close' : 'Create Listing'}
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {listings.length === 0 ? (
-                // Fallback placeholders
-                [1, 2, 3, 4, 5, 6].map((n) => (
-                  <div key={n} className="h-56 bg-white rounded-lg shadow-sm animate-pulse" />
-                ))
-              ) : (
-                listings.map((l) => <ListingCard key={l._id} listing={l} />)
-              )}
+        <div className="px-4 sm:px-0">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900">Featured Listings</h2>
+            <div className="hidden sm:block">
+              <button
+                onClick={() => setShowForm((s) => !s)}
+                className="px-4 py-2 text-sm font-medium rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
+              >
+                {showForm ? 'Close' : 'Create Listing'}
+              </button>
             </div>
           </div>
-        </main>
-      </div>
-    );
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {listings.length === 0 ? (
+              // Fallback placeholders
+              [1, 2, 3, 4, 5, 6].map((n) => (
+                <div key={n} className="h-56 bg-white rounded-lg shadow-sm animate-pulse" />
+              ))
+            ) : (
+              listings.map((l) => <ListingCard key={l._id} listing={l} />)
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 }
