@@ -125,24 +125,24 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
         >
           ✕
         </button>
-        <h2 className="text-xl font-semibold mb-4">Create a Listing</h2>
+        <h2 className="text-xl text-[#0021A5] font-semibold mb-4">Create a Listing</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Title</label>
+            <label className="block text-sm font-medium text-gray-700 p-[5px]">Title</label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <label className="block text-sm font-medium text-gray-700 p-[5px]">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
               rows={3}
               required
             />
@@ -150,11 +150,11 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Price</label>
+              <label className="block text-sm font-medium text-gray-700 p-[5px]">Price</label>
               <input
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
                 required
                 type="number"
                 step="0.01"
@@ -162,11 +162,11 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <label className="block text-sm font-medium text-gray-700 p-[5px]">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
               >
                 <option>Books</option>
                 <option>Electronics</option>
@@ -187,7 +187,7 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#f0f0ff] file:text-[#0021A5] hover:file:bg-[#e8e8fc]"
                 />
                 <p className="text-xs text-gray-500 mt-1">Upload an image file (max 5MB)</p>
               </div>
@@ -217,7 +217,7 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
                     }
                   }}
                   placeholder="Enter image URL"
-                  className="block w-full rounded-md border-gray-300 shadow-sm"
+                  className="block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
                 />
                 <p className="text-xs text-gray-500 mt-1">Enter an image URL instead</p>
               </div>
@@ -239,7 +239,7 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
             <button
               type="submit"
               disabled={loading || uploading}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#0021A5] hover:bg-[#002657] disabled:opacity-50"
             >
               {uploading ? 'Uploading image...' : loading ? 'Creating...' : 'Create Listing'}
             </button>
