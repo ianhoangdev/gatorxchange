@@ -14,11 +14,11 @@ export default function ListingCard({ listing }: { listing: any }) {
         )}
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-medium text-gray-900 truncate">{listing.title}</h3>
-        <p className="mt-1 text-sm text-gray-500 line-clamp-2">{listing.description}</p>
+        <h3 className="text-lg font-medium text-gray-900 truncate p-[5px]">{listing.title}</h3>
+        <p className="mt-1 text-sm text-gray-500 line-clamp-2 p-[5px]">{listing.description}</p>
         <div className="mt-3 flex items-center justify-between">
-          <span className="text-lg font-semibold text-indigo-600">${listing.price?.toFixed?.(2) ?? listing.price}</span>
-          <span className="text-sm text-gray-500">{listing.category}</span>
+          <span className="text-lg font-semibold text-[#0021A5] p-[5px]">${listing.price?.toFixed?.(2) ?? listing.price}</span>
+          <span className="text-sm text-gray-500 p-[5px]">{listing.category}</span>
         </div>
       </div>
     </div>

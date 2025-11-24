@@ -13,7 +13,7 @@ const features = [
   {
     icon: TrendingUp,
     title: "Local Momentum",
-    description: "Only see listings that move on campus—no clutter, just what you need.",
+    description: "Only see listings that move on campus -- no clutter, just what you need.",
   },
   {
     icon: Shield,
@@ -28,7 +28,7 @@ const features = [
   {
     icon: Sparkles,
     title: "UF Flavor",
-    description: "Tailored to Gators—gear, tickets, books, and everything orange & blue.",
+    description: "Tailored to Gators -- gear, tickets, books, and everything orange & blue.",
   },
 ];
 
