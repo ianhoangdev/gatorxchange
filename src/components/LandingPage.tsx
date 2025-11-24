@@ -2,6 +2,7 @@
 
 import { Hero } from "@/components/hero";
 import { About } from "@/components/about";
+import { AdditionalInfo } from "@/components/additional-info";
 import { ScrollIndicator } from "@/components/scroll-indicator";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -28,6 +29,7 @@ export default function LandingPage() {
         <Hero onSignIn={signInWithGoogle} />
         <ScrollIndicator />
         <About />
+        <AdditionalInfo />
       </main>
     </div>
   );

@@ -29,16 +29,16 @@ export function Hero({ onSignIn }: HeroProps) {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center px-4 py-20 overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-rg7mTCyIcDDRboV2eaZC1oUr6J9vRy.png"
-          alt="University of Florida Campus"
-          className="w-full h-full object-cover"
+      <div className="absolute inset-0">
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/uf-background.jpg')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/25 to-black/40" />
       </div>
 
-      <div className="max-w-5xl mx-auto text-center space-y-8">
+      <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-balance">
           <span style={{ perspective: "1000px", display: "inline-block" }}>
             {TITLE_WORDS.map((word, index) => (
