@@ -36,7 +36,7 @@ export function Benefits() {
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-balance">
-            Why Choose <span className="text-primary">Gator Exchange</span>?
+            Why Choose <span className="text-primary">GatorXchange</span>?
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
             Built specifically for the UF community with features that matter to students.

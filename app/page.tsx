@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import LandingPage from '@/components/LandingPage';
 import ListingForm from '@/components/ListingForm';
+import { ListingsShell } from '@/components/ListingsShell';
 import Navbar from '@/components/Navbar';
 import ListingCard from '@/components/ListingCard';
 
@@ -52,7 +53,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <ListingsShell>
       <Navbar />
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -60,7 +61,7 @@ export default function Home() {
 
         <div className="px-4 sm:px-0">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900">Featured Listings</h2>
+            <h2 className="text-3xl font-bold mb-4">Featured Listings</h2>
             <div className="hidden sm:block">
               <button
                 onClick={() => setShowForm((s) => !s)}
@@ -83,6 +84,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-    </div>
+    </ListingsShell>
   );
 }

@@ -4,9 +4,15 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { User as FirebaseUser } from 'firebase/auth';
 
-export default function ListingForm({ user, onClose }: { user?: FirebaseUser | null; onClose: () => void }) {
+type ListingFormProps = {
+  user?: FirebaseUser | null;
+  onClose: () => void;
+};
+
+export default function ListingForm({ user, onClose }: ListingFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -24,12 +30,10 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file);
-      setImageUrl(''); // Clear URL input when file is selected
-      
-      // Create preview
+      setImageUrl('');
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
+      reader.onload = (ev) => {
+        setImagePreview(ev.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -45,8 +49,12 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to upload image');
+      let errorMessage = 'Failed to upload image';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch {}
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
@@ -61,7 +69,6 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
     try {
       let finalImageUrl = imageUrl;
 
-      // Upload image to S3 if a file is selected
       if (imageFile) {
         setUploading(true);
         finalImageUrl = await uploadImage(imageFile);
@@ -84,11 +91,14 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data?.error || 'Failed to create listing');
+        let message = 'Failed to create listing';
+        try {
+          const data = await res.json();
+          message = data?.error || message;
+        } catch {}
+        throw new Error(message);
       }
 
-      // Reset and close
       setTitle('');
       setDescription('');
       setPrice('');
@@ -102,7 +112,7 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
       onClose();
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
       setUploading(false);
@@ -111,142 +121,282 @@ export default function ListingForm({ user, onClose }: { user?: FirebaseUser | n
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="
+        fixed inset-0 z-50 flex items-center justify-center
+        bg-gradient-to-b from-[#00153D]/95 via-[#011E57]/95 to-[#000814]/95
+      "
       aria-modal="true"
       role="dialog"
       onClick={onClose}
     >
-      <div className="absolute inset-0 bg-black/40" />
-      <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-lg p-6 mx-4" onClick={(e) => e.stopPropagation()}>
+      <div className="pointer-events-none absolute inset-0 opacity-40">
+        <div className="absolute -top-40 -left-32 h-64 w-64 rounded-full bg-[#FA4616]/45 blur-3xl" />
+        <div className="absolute bottom-[-20%] right-[-10%] h-72 w-72 rounded-full bg-[#0021A5]/60 blur-3xl" />
+      </div>
+
+      {/* Modal card */}
+      <div
+        className="
+          relative w-full max-w-2xl mx-4
+          rounded-3xl border border-white/20
+          bg-white/10 backdrop-blur-2xl
+          shadow-[0_30px_90px_rgba(0,0,0,0.9)]
+          p-6 md:p-8 text-white
+          max-h-[80vh]
+          flex flex-col
+        "
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close button */}
         <button
           aria-label="Close"
           onClick={onClose}
-          className="absolute right-3 top-3 rounded-full p-1 hover:bg-gray-100"
+          className="
+            absolute right-4 top-4 flex h-8 w-8 items-center justify-center
+            rounded-full bg-black/30 text-white/80 hover:bg-black/50
+            border border-white/15 text-sm
+          "
         >
           ✕
         </button>
-        <h2 className="text-xl text-[#0021A5] font-semibold mb-4">Create a Listing</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 p-[5px]">Title</label>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
-              required
-            />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 p-[5px]">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
-              rows={3}
-              required
-            />
-          </div>
+        <header className="mb-4 space-y-2 pr-10">
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/70">
+            <span className="h-2 w-2 rounded-full bg-[#FA4616]" />
+            New Listing
+          </p>
+          <h2 className="text-2xl md:text-3xl font-semibold drop-shadow">
+            Create a Listing
+          </h2>
+          <p className="text-sm text-white/70">
+            Share what you&apos;re selling with other UF students. Clear photos and detailed
+            descriptions help your listing move faster.
+          </p>
+        </header>
 
-          <div className="grid grid-cols-2 gap-4">
+        <div className="flex-1 overflow-y-auto pl-3 pr-4 pt-2 pb-4 listing-scroll">
+          <form onSubmit={handleSubmit} className="space-y-5 pb-4">
+            {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 p-[5px]">Price</label>
+              <label className="block text-xs font-medium uppercase tracking-[0.18em] text-white/70 mb-1">
+                Title
+              </label>
               <input
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 required
-                type="number"
-                step="0.01"
+                placeholder="Ex: Calculus I textbook, gently used"
+                className="
+                  mt-1 block w-full rounded-xl
+                  border border-white/18 bg-white/5
+                  px-3 py-2.5 text-sm text-white
+                  placeholder:text-white/40
+                  focus:outline-none focus:ring-2 focus:ring-[#FA4616] focus:border-transparent
+                "
               />
             </div>
 
+            {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 p-[5px]">Category</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
-              >
-                <option>Books</option>
-                <option>Electronics</option>
-                <option>Furniture</option>
-                <option>Clothing</option>
-                <option>Other</option>
-              </select>
+              <label className="block text-xs font-medium uppercase tracking-[0.18em] text-white/70 mb-1">
+                Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                rows={4}
+                placeholder="Include condition, pickup location on campus, and any extras."
+                className="
+                  mt-1 block w-full rounded-xl
+                  border border-white/18 bg-white/5
+                  px-3 py-2.5 text-sm text-white
+                  placeholder:text-white/40
+                  focus:outline-none focus:ring-2 focus:ring-[#FA4616] focus:border-transparent
+                  resize-y
+                "
+              />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Image</label>
-            <div className="mt-1 space-y-2">
-              {/* File Upload */}
+            {/* Price + Category */}
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#f0f0ff] file:text-[#0021A5] hover:file:bg-[#e8e8fc]"
-                />
-                <p className="text-xs text-gray-500 mt-1">Upload an image file (max 5MB)</p>
-              </div>
-              
-              {/* OR divider */}
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">OR</span>
-                </div>
-              </div>
-              
-              {/* URL Input */}
-              <div>
-                <input
-                  value={imageUrl}
-                  onChange={(e) => {
-                    setImageUrl(e.target.value);
-                    if (e.target.value) {
-                      setImageFile(null);
-                      setImagePreview(null);
-                      if (fileInputRef.current) {
-                        fileInputRef.current.value = '';
-                      }
-                    }
-                  }}
-                  placeholder="Enter image URL"
-                  className="block w-full rounded-md border-gray-300 shadow-sm p-[5px]"
-                />
-                <p className="text-xs text-gray-500 mt-1">Enter an image URL instead</p>
-              </div>
-              
-              {/* Image Preview */}
-              {imagePreview && (
-                <div className="mt-2">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="h-32 w-32 object-cover rounded-md border"
+                <label className="block text-xs font-medium uppercase tracking-[0.18em] text-white/70 mb-1">
+                  Price (USD)
+                </label>
+                <div
+                    className="
+                      mt-1 flex items-center gap-2 rounded-xl
+                      border border-white/18 bg-white/5
+                      px-3 py-2.5
+                      focus-within:ring-2 focus-within:ring-[#FA4616] focus-within:border-transparent
+                    "
+                  >
+                  <span className="text-sm text-white/70">$</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    required
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder="25.00"
+                    className="
+                      flex-1 bg-transparent text-sm text-white
+                      placeholder:text-white/40
+                      focus:outline-none
+                    "
                   />
                 </div>
-              )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium uppercase tracking-[0.18em] text-white/70 mb-1">
+                  Category
+                </label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="
+                    mt-1 block w-full rounded-xl
+                    border border-white/18 bg-white/5
+                    px-3 py-2.5 text-sm text-white
+                    focus:outline-none focus:ring-2 focus:ring-[#FA4616] focus:border-transparent
+                  "
+                >
+                  <option className="bg-[#00153D]">Books</option>
+                  <option className="bg-[#00153D]">Electronics</option>
+                  <option className="bg-[#00153D]">Furniture</option>
+                  <option className="bg-[#00153D]">Clothing</option>
+                  <option className="bg-[#00153D]">Other</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              disabled={loading || uploading}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#0021A5] hover:bg-[#002657] disabled:opacity-50"
-            >
-              {uploading ? 'Uploading image...' : loading ? 'Creating...' : 'Create Listing'}
-            </button>
-          </div>
+            {/* Image section */}
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-[0.18em] text-white/70 mb-2">
+                Images
+              </label>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
-        </form>
+              <div className="space-y-3">
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="
+                      block w-full text-xs text-white/80
+                      file:mr-3 file:rounded-full file:border-0
+                      file:bg-white/90 file:px-4 file:py-2
+                      file:text-xs file:font-semibold file:text-[#0021A5]
+                      hover:file:bg-white
+                    "
+                  />
+                  <p className="mt-1 text-[11px] text-white/60">
+                    Upload a clear photo (max 5MB). A good image helps your listing stand out.
+                  </p>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-white/20" />
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span
+                      className="
+                        relative z-10
+                        px-3 py-0.5
+                        rounded-md
+                        bg-[#00153D]
+                        text-white/70
+                        backdrop-blur
+                      "
+                    >
+                      OR paste an image URL
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <input
+                    type="url"
+                    value={imageUrl}
+                    onChange={(e) => {
+                      setImageUrl(e.target.value);
+                      if (e.target.value) {
+                        setImageFile(null);
+                        setImagePreview(null);
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = '';
+                        }
+                      }
+                    }}
+                    placeholder="https://example.com/your-image.jpg"
+                    className="
+                      block w-full rounded-xl
+                      border border-white/18 bg-white/5
+                      px-3 py-2.5 text-sm text-white
+                      placeholder:text-white/40
+                      focus:outline-none focus:ring-2 focus:ring-[#FA4616] focus:border-transparent
+                    "
+                  />
+                  <p className="mt-1 text-[11px] text-white/60">
+                    Use a hosted image link if you already have one.
+                  </p>
+                </div>
+
+                {imagePreview && (
+                  <div className="mt-2 rounded-2xl border border-white/20 bg-black/30 p-2 inline-flex">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="h-24 w-24 rounded-xl object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="
+                  text-xs md:text-sm rounded-full border border-white/25
+                  bg-white/5 px-4 py-2 text-white/80
+                  hover:bg-white/10
+                "
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading || uploading}
+                className="
+                  inline-flex items-center gap-2 rounded-full
+                  bg-[#FA4616] px-5 py-2.5 text-xs md:text-sm font-medium text-white
+                  shadow-lg shadow-black/40 hover:bg-[#FA4616]/90 hover:shadow-xl
+                  disabled:opacity-60 disabled:cursor-not-allowed
+                "
+              >
+                {uploading
+                  ? 'Uploading image...'
+                  : loading
+                  ? 'Creating...'
+                  : 'Create Listing'}
+              </button>
+            </div>
+
+            {error && (
+              <p className="mt-2 text-sm text-red-300">
+                {error}
+              </p>
+            )}
+          </form>
+        </div>
       </div>
     </div>
   );

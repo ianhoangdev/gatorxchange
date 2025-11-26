@@ -59,7 +59,7 @@ export function About() {
             <span className="uppercase tracking-[0.2em] text-xs font-semibold text-white/80">Made For Gators</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mt-6 drop-shadow-[0_10px_35px_rgba(0,0,0,0.4)]">
-            Why Choose Gator Exchange?
+            Why Choose GatorXchange?
           </h2>
           <p className="text-lg text-white/70 max-w-2xl mx-auto mt-4">
             Liquid-glass cards spotlight what matters: safety, speed, and a marketplace that feels like it was designed

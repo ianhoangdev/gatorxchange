@@ -8,7 +8,7 @@ type HeroProps = {
   onSignIn: () => void;
 };
 
-const TITLE_WORDS = ["Welcome", "to", "the", "Gator", "Exchange!"];
+const TITLE_WORDS = ["Welcome", "to", "the", "GatorXchange!"];
 
 export function Hero({ onSignIn }: HeroProps) {
   const [animatedWords, setAnimatedWords] = useState<number[]>([]);

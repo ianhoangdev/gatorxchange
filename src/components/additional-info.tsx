@@ -16,7 +16,7 @@ export function AdditionalInfo() {
       <div className="max-w-6xl mx-auto text-center space-y-10">
         <div className="space-y-3">
           <p className="text-sm uppercase tracking-[0.2em] text-white/70">Contact Us</p>
-          <h3 className="text-3xl md:text-4xl font-bold drop-shadow">Stay connected with the Gator Exchange team</h3>
+          <h3 className="text-3xl md:text-4xl font-bold drop-shadow">Stay connected with the GatorXchange team</h3>
           <p className="text-white/70 max-w-2xl mx-auto">
             Questions, partnerships, or feedback? Reach out anytime—we love hearing from fellow Gators.
           </p>
@@ -38,7 +38,7 @@ export function AdditionalInfo() {
         </div>
 
         <div className="text-sm text-white/60 space-y-1">
-          <p>© {new Date().getFullYear()} Gator Exchange. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} GatorXchange. All rights reserved.</p>
           <p>Built by and for the University of Florida community. Content and listings remain property of their owners.</p>
         </div>
       </div>
