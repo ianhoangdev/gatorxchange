@@ -76,13 +76,14 @@ export default function ListingForm({ user, onClose }: ListingFormProps) {
       }
 
       const body = {
-        title,
-        description,
-        price: Number(price),
-        category,
-        imageUrl: finalImageUrl,
-        sellerId,
-      };
+      title,
+      description,
+      price: Number(price),
+      category,
+      imageUrl: finalImageUrl,
+      sellerId,
+      sellerEmail: user?.email || null,
+    };
 
       const res = await fetch('/api/listings', {
         method: 'POST',

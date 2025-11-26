@@ -1,30 +1,44 @@
 'use client';
 
+type Listing = {
+  id?: string;
+  title: string;
+  description: string;
+  price: number;
+  category?: string;
+  imageUrl?: string;
+  createdAt?: string | Date;
+  sellerEmail?: string | null;
+};
+
 type ListingCardProps = {
-  listing: {
-    id?: string;
-    title: string;
-    description: string;
-    price: number;
-    category?: string;
-    imageUrl?: string;
-    createdAt?: string | Date;
-  };
+  listing: Listing;
 };
 
 export default function ListingCard({ listing }: ListingCardProps) {
   const formattedPrice =
-    typeof listing.price === "number"
+    typeof listing.price === 'number'
       ? listing.price.toFixed(2)
       : listing.price;
 
-  const createdLabel =
-    listing.createdAt
-      ? new Date(listing.createdAt).toLocaleDateString(undefined, {
-          month: "short",
-          day: "numeric",
-        })
-      : "Recently listed";
+  const createdLabel = listing.createdAt
+    ? new Date(listing.createdAt).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+      })
+    : 'Recently listed';
+
+  const hasSellerEmail = !!listing.sellerEmail;
+
+  const mailtoHref =
+    hasSellerEmail &&
+    `mailto:${encodeURIComponent(
+      listing.sellerEmail as string
+    )}?subject=${encodeURIComponent(
+      `Interested in your listing: ${listing.title}`
+    )}&body=${encodeURIComponent(
+      `Hi,\n\nI'm interested in your listing "${listing.title}" on GatorXchange.\n\nCould you share more details?\n\nThanks!`
+    )}`;
 
   return (
     <article
@@ -47,7 +61,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
           <img
             src={listing.imageUrl}
             alt={listing.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#00153D] to-[#011E57]">
@@ -81,6 +95,51 @@ export default function ListingCard({ listing }: ListingCardProps) {
             {listing.category}
           </div>
         </div>
+
+        {/* Contact seller button */}
+        <a
+          href={hasSellerEmail ? (mailtoHref as string) : undefined}
+          onClick={(e) => {
+            if (!hasSellerEmail) e.preventDefault();
+          }}
+          className={`
+            mt-2 inline-flex w-full items-center justify-center gap-2
+            rounded-xl border px-4 py-2 text-xs font-medium
+            backdrop-blur transition-all
+            ${
+              hasSellerEmail
+                ? 'border-white/20 bg-white/10 text-white/90 hover:bg-white/20 hover:border-white/30 hover:shadow-lg hover:shadow-black/40 cursor-pointer'
+                : 'border-white/10 bg-white/5 text-white/40 cursor-not-allowed'
+            }
+          `}
+        >
+          {/* email icon */}
+          <svg
+            aria-hidden="true"
+            className="h-3.5 w-3.5"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <rect
+              x="3"
+              y="5"
+              width="18"
+              height="14"
+              rx="2"
+              ry="2"
+              className="stroke-current"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M5 7.5L12 12.5L19 7.5"
+              className="stroke-current"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span>Contact seller</span>
+        </a>
       </div>
     </article>
   );
