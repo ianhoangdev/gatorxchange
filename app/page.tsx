@@ -13,6 +13,7 @@ export default function Home() {
   const [showForm, setShowForm] = useState(false);
   const [listings, setListings] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortOrder, setSortOrder] = useState<'none' | 'low' | 'high'>('none');
 
   useEffect(() => {
     if (!user) return;
@@ -42,10 +43,28 @@ export default function Home() {
     (value ?? '').toLowerCase().trim();
 
   const filteredListings = useMemo(() => {
-    if (selectedCategory === 'all') return listings;
+    let result = listings;
 
-    return listings.filter((l) => normalize(l.category) === normalize(selectedCategory));
-  }, [listings, selectedCategory]);
+    // CATEGORY FILTER
+    if (selectedCategory !== 'all') {
+      result = result.filter(
+        (l) => normalize(l.category) === normalize(selectedCategory)
+      );
+    }
+
+    // PRICE SORT
+    if (sortOrder === 'low') {
+      result = [...result].sort(
+        (a, b) => (a.price ?? 0) - (b.price ?? 0)
+      );
+    } else if (sortOrder === 'high') {
+      result = [...result].sort(
+        (a, b) => (b.price ?? 0) - (a.price ?? 0)
+      );
+    }
+
+    return result;
+  }, [listings, selectedCategory, sortOrder]);
 
   if (loading) {
     return (
@@ -61,7 +80,10 @@ export default function Home() {
 
   return (
     <ListingsShell>
-      <Navbar onCategoryChange={setSelectedCategory} />
+      <Navbar
+        onCategoryChange={setSelectedCategory}
+        onSortChange={setSortOrder}
+      />
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {showForm && (

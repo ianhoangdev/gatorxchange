@@ -5,9 +5,10 @@ import { useAuth } from '@/context/AuthContext';
 
 type NavbarProps = {
   onCategoryChange?: (category: string) => void;
+  onSortChange?: (order: 'none' | 'low' | 'high') => void;
 };
 
-export default function Navbar({ onCategoryChange }: NavbarProps) {
+export default function Navbar({ onCategoryChange, onSortChange }: NavbarProps) {
   const { user, signInWithGoogle, logout } = useAuth();
 
   return (
@@ -50,6 +51,16 @@ export default function Navbar({ onCategoryChange }: NavbarProps) {
                   <option value="other" className="bg-black text-white">
                     Other
                   </option>
+                </select>
+                <select
+                  aria-label="Filter listings by price"
+                  className="bg-transparent text-xs text-white focus:outline-none"
+                  defaultValue="none"
+                  onChange={(e) => onSortChange?.(e.target.value as any)}
+                >
+                  <option value="none"  className="bg-black text-white">Sort Price</option>
+                  <option value="low"  className="bg-black text-white">Low → High</option>
+                  <option value="high" className="bg-black text-white">High → Low</option>
                 </select>
               </div>
             </div>
