@@ -7,6 +7,7 @@ export interface IListing extends Document {
   category: string;
   imageUrl?: string;
   sellerId: string;
+  sellerEmail: string;
   createdAt: Date;
 }
 
@@ -17,6 +18,7 @@ const ListingSchema: Schema = new Schema<IListing>({
   category: { type: String, required: true },
   imageUrl: { type: String },
   sellerId: { type: String, required: true },
+  sellerEmail: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

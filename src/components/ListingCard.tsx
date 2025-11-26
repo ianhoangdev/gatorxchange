@@ -8,7 +8,7 @@ type Listing = {
   category?: string;
   imageUrl?: string;
   createdAt?: string | Date;
-  sellerEmail?: string | null;
+  sellerEmail?: string | null; // ✅ NEW
 };
 
 type ListingCardProps = {
@@ -28,17 +28,23 @@ export default function ListingCard({ listing }: ListingCardProps) {
       })
     : 'Recently listed';
 
-  const hasSellerEmail = !!listing.sellerEmail;
-
   const mailtoHref =
-    hasSellerEmail &&
+    listing.sellerEmail &&
     `mailto:${encodeURIComponent(
-      listing.sellerEmail as string
+      listing.sellerEmail
     )}?subject=${encodeURIComponent(
       `Interested in your listing: ${listing.title}`
     )}&body=${encodeURIComponent(
       `Hi,\n\nI'm interested in your listing "${listing.title}" on GatorXchange.\n\nCould you share more details?\n\nThanks!`
     )}`;
+
+  const handleContactClick = () => {
+    if (mailtoHref) {
+      window.location.href = mailtoHref;
+    } else {
+      alert('Seller email is not available for this listing yet.');
+    }
+  };
 
   return (
     <article
@@ -97,21 +103,19 @@ export default function ListingCard({ listing }: ListingCardProps) {
         </div>
 
         {/* Contact seller button */}
-        <a
-          href={hasSellerEmail ? (mailtoHref as string) : undefined}
-          onClick={(e) => {
-            if (!hasSellerEmail) e.preventDefault();
-          }}
-          className={`
+        <button
+          type="button"
+          onClick={handleContactClick}
+          className="
             mt-2 inline-flex w-full items-center justify-center gap-2
-            rounded-xl border px-4 py-2 text-xs font-medium
-            backdrop-blur transition-all
-            ${
-              hasSellerEmail
-                ? 'border-white/20 bg-white/10 text-white/90 hover:bg-white/20 hover:border-white/30 hover:shadow-lg hover:shadow-black/40 cursor-pointer'
-                : 'border-white/10 bg-white/5 text-white/40 cursor-not-allowed'
-            }
-          `}
+            rounded-xl border border-white/20
+            bg-white/10 px-4 py-2
+            text-xs font-medium text-white/90
+            backdrop-blur
+            transition-all
+            hover:bg-white/20 hover:border-white/30
+            hover:shadow-lg hover:shadow-black/40
+          "
         >
           {/* email icon */}
           <svg
@@ -139,7 +143,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
             />
           </svg>
           <span>Contact seller</span>
-        </a>
+        </button>
       </div>
     </article>
   );
