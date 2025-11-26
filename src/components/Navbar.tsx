@@ -3,14 +3,18 @@
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 
-export default function Navbar() {
+type NavbarProps = {
+  onCategoryChange?: (category: string) => void;
+};
+
+export default function Navbar({ onCategoryChange }: NavbarProps) {
   const { user, signInWithGoogle, logout } = useAuth();
 
   return (
     <nav className="sticky top-0 z-40 border-b border-white/10 bg-black/40 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Left: brand + search */}
+          {/* Left: brand + category filter */}
           <div className="flex items-center gap-4">
             <Link
               href="/"
@@ -22,16 +26,36 @@ export default function Navbar() {
 
             <div className="hidden sm:block">
               <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-white/80">
-                <input
-                  aria-label="Search listings"
-                  placeholder="Search items, e.g. textbook"
-                  className="w-64 bg-transparent text-xs text-white placeholder:text-white/50 focus:outline-none"
-                />
+                <select
+                  aria-label="Filter listings by category"
+                  className="bg-transparent text-xs text-white focus:outline-none"
+                  defaultValue="all"
+                  onChange={(e) => onCategoryChange?.(e.target.value)}
+                >
+                  <option value="all" className="bg-black text-white">
+                    All categories
+                  </option>
+                  <option value="books" className="bg-black text-white">
+                    Books
+                  </option>
+                  <option value="electronics" className="bg-black text-white">
+                    Electronics
+                  </option>
+                  <option value="furniture" className="bg-black text-white">
+                    Furniture
+                  </option>
+                  <option value="clothing" className="bg-black text-white">
+                    Clothing
+                  </option>
+                  <option value="other" className="bg-black text-white">
+                    Other
+                  </option>
+                </select>
               </div>
             </div>
           </div>
 
-          {/* Right: nav links + auth */}
+          {/* Right: nav links + auth (unchanged) */}
           <div className="flex items-center gap-3">
             <Link
               href="/"

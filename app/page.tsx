@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import LandingPage from '@/components/LandingPage';
 import ListingForm from '@/components/ListingForm';
@@ -9,14 +9,12 @@ import Navbar from '@/components/Navbar';
 import ListingCard from '@/components/ListingCard';
 
 export default function Home() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [listings, setListings] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Keep hooks in the same order on every render. Move effects above
-  // any early returns so React doesn't detect a changing number of hooks.
   useEffect(() => {
-    // only load listings when a user is present
     if (!user) return;
 
     let mounted = true;
@@ -40,6 +38,15 @@ export default function Home() {
     };
   }, [user]);
 
+  const normalize = (value?: string | null) =>
+    (value ?? '').toLowerCase().trim();
+
+  const filteredListings = useMemo(() => {
+    if (selectedCategory === 'all') return listings;
+
+    return listings.filter((l) => normalize(l.category) === normalize(selectedCategory));
+  }, [listings, selectedCategory]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -54,10 +61,15 @@ export default function Home() {
 
   return (
     <ListingsShell>
-      <Navbar />
+      <Navbar onCategoryChange={setSelectedCategory} />
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {showForm && <ListingForm user={user} onClose={() => setShowForm(false)} />}
+        {showForm && (
+          <ListingForm
+            user={user}
+            onClose={() => setShowForm(false)}
+          />
+        )}
 
         <div className="px-4 sm:px-0">
           <div className="flex items-center justify-between mb-6">
@@ -73,13 +85,14 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {listings.length === 0 ? (
-              // Fallback placeholders
-              [1, 2, 3, 4, 5, 6].map((n) => (
-                <div key={n} className="h-56 bg-white rounded-lg shadow-sm animate-pulse" />
-              ))
+            {filteredListings.length === 0 ? (
+              <p className="text-white col-span-full">
+                No listings found for this category.
+              </p>
             ) : (
-              listings.map((l) => <ListingCard key={l._id} listing={l} />)
+              filteredListings.map((l) => (
+                <ListingCard key={l._id} listing={l} />
+              ))
             )}
           </div>
         </div>
