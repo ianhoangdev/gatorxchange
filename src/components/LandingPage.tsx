@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
 export default function LandingPage() {
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, errorMessage } = useAuth();
 
   return (
     <div className="bg-background text-foreground">
@@ -29,6 +29,13 @@ export default function LandingPage() {
     </header>
 
       <main>
+        {errorMessage && (
+          <div className="fixed top-16 left-0 right-0 z-50">
+            <div className="mx-auto max-w-2xl rounded-md border border-red-500/30 bg-red-600/15 px-4 py-3 text-sm text-red-200 backdrop-blur">
+              {errorMessage}
+            </div>
+          </div>
+        )}
         <Hero onSignIn={signInWithGoogle} />
         <ScrollIndicator />
         <About />
